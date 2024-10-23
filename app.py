@@ -18,6 +18,8 @@ def register():
         email = request.form['email'].strip()
         password = request.form['password'].strip()
         
+        errors = []
+        
         if not username or not username.isalpha():
             flash("username must only contain letters!")
             return redirect(url_for('register'))
@@ -27,19 +29,27 @@ def register():
             flash("Inavlid email format")
             return redirect(url_for('register'))
         
-        password_pattern = r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$'
-        if len(password) < 8 or not re.match(password_pattern, password):
-            flash("Password must contain at least one uppercase letter, one lowercase letter, one number and be at least 8 characters!")
-            return redirect(url_for('register'))
+        if len(password) < 8:
+            errors.append("❌ Password must be at least 8 characters")
+        if not re.search(r'[A-Z]', password):
+            errors.append("❌ Missing uppercase letter")
+        if not re.search(r'[a-z]', password):
+            errors.append("❌ Missing lowercase letter")
+        if not re.search(r'\d', password):
+            errors.append("❌ Missing number")
+        
+        
+        if errors:
+            return render_template('register.html', errors=errors)
         
         hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
         
         users[username] = {
             'email': email,
-            'password': password,
+            'password': hashed_password,
         }
         
-        flash('Registration successful!')
+        flash('✅ Registration successful!', 'success')
         return redirect(url_for('home'))
     
     return render_template('register.html')
