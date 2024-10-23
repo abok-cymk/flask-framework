@@ -21,14 +21,12 @@ def register():
         errors = []
         
         if not username or not username.isalpha():
-            flash("username must only contain letters!")
-            return redirect(url_for('register'))
-        
+            errors.append("username must only contain letters!")
+            
         email_pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
         if not re.match(email_pattern, email):
-            flash("Inavlid email format")
-            return redirect(url_for('register'))
-        
+            errors.append("Invalid email format")
+            
         if len(password) < 8:
             errors.append("❌ Password must be at least 8 characters")
         if not re.search(r'[A-Z]', password):
