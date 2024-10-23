@@ -17,18 +17,38 @@
 
    <div class="form-container">
         <h1>Registration Form</h1>
+
+        {% if errors %}
+            <div class="error-container">
+                <h3 class="error-heading">Please fix the following:</h3>
+                {% for error in errors %}
+                    <div class="error-message">{{ error }}</div>
+                {% endfor %}
+            </div>
+        {% endif %}
         <form action="{{ url_for('register') }}" method="POST">
             <div class="form-group">
                 <label for="username">Username:</label>
-                <input type="text" id="username" name="username" required>
+                <input type="text" id="username" name="username"
+                    value="{{ request.form.username }}" required>
             </div>
             <div class="form-group">
                 <label for="email">Email:</label>
-                <input type="email" id="email" name="email" required>
+                <input type="email" id="email" name="email"
+                    value="{{ request.form.email }}" required>
             </div>
             <div class="form-group">
                 <label for="password">Password:</label>
                 <input type="password" id="password" name="password" required>
+                <div class="password-requirements">
+                    <p>Password must contain:</p>
+                    <ul>
+                        <li id="length">8+ characters</li>
+                        <li id="uppercase">Uppercase letter</li>
+                        <li id="lowercase">Lowercase letter</li>
+                        <li id="number">Number</li>
+                    </ul>
+                </div>
             </div>
             <button type="submit" class="button">Sign up</button>
         </form>
